@@ -1,8 +1,6 @@
 package com.company;
 
 import org.apache.poi.hssf.record.crypto.Biff8EncryptionKey;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import java.io.File;
@@ -10,31 +8,19 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 public class Main {
-
     public static void main(String[] args) {
-        System.out.println("Hello");
-
+        String inputPath  = args[0];
+        String outputPath = args[1];
+        String password = args[2];
         try {
-
-            Biff8EncryptionKey.setCurrentUserPassword("TabulaReporting!");
-            FileInputStream input = new FileInputStream("/home/luigi/Desktop/test.xls");
-            HSSFWorkbook hwb = new HSSFWorkbook(input);
-
-            HSSFSheet sheet = hwb.getSheetAt(0);
-            HSSFRow row = sheet.getRow(0);
-            String value1 = row.getCell(0).getStringCellValue();
-            String value2 = row.getCell(1).getStringCellValue();
-            System.out.println(value1);
-            System.out.println(value2);
+            Biff8EncryptionKey.setCurrentUserPassword(password);
+            FileInputStream input = new FileInputStream(inputPath);
+            HSSFWorkbook workbook = new HSSFWorkbook(input);
             Biff8EncryptionKey.setCurrentUserPassword(null);
-
-            FileOutputStream out = new FileOutputStream(new File("/home/luigi/Desktop/test-unprotected.xls"));
-
-            hwb.write(out);
-            hwb.close();
+            FileOutputStream out = new FileOutputStream(new File(outputPath));
+            workbook.write(out);
+            workbook.close();
             out.close();
-
-
         } catch (Exception ex) {
             throw new RuntimeException("Unable to process encrypted document", ex);
         } finally {
